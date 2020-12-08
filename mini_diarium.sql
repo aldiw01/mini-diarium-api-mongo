@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 08, 2020 at 03:59 AM
+-- Generation Time: Dec 08, 2020 at 05:32 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 5.6.33
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mini-diarium`
+-- Database: `mini_diarium`
 --
 
 -- --------------------------------------------------------
@@ -196,6 +196,25 @@ CREATE TABLE `history` (
   `created` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `history`
+--
+
+INSERT INTO `history` (`id`, `reference_id`, `user_id`, `step_id`, `message`, `created`) VALUES
+('H1EP09I8DO', '970037', '970037', 'LOG2', '970037', '2020-12-08T04:25:46.168Z'),
+('H1EP09N52O', '970037', '970037', 'LOG1', '970037', '2020-12-08T04:28:26.584Z'),
+('H1EP09NBCI', '970037', '970037', 'LOG2', '970037', '2020-12-08T04:28:33.042Z'),
+('H1EP09P4I8', '970037', '970037', 'LOG1', '970037', '2020-12-08T04:29:31.592Z'),
+('H1EP09P7E2', '970037', '970037', 'LOG2', '970037', '2020-12-08T04:29:34.530Z'),
+('H1EP09PLKT', '010101', '010101', 'LOG1', '010101', '2020-12-08T04:29:49.085Z'),
+('H1EP09Q20B', '010101', '010101', 'LOG2', '010101', '2020-12-08T04:30:01.739Z'),
+('H1EP09QCFG', '010101', '010101', 'LOG1', '010101', '2020-12-08T04:30:12.464Z'),
+('H1EP09QIUU', '010101', '010101', 'LOG2', '010101', '2020-12-08T04:30:19.102Z'),
+('H1EP09SOBA', '010101', '010101', 'LOG1', '010101', '2020-12-08T04:31:30.154Z'),
+('H1EP09T41C', '010101', '010101', 'LOG2', '010101', '2020-12-08T04:31:42.124Z'),
+('H1EP09T945', '123456', '123456', 'LOG1', '123456', '2020-12-08T04:31:47.333Z'),
+('H1EP09THL5', '123456', '123456', 'LOG2', '123456', '2020-12-08T04:31:56.069Z');
+
 -- --------------------------------------------------------
 
 --
@@ -330,8 +349,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `password`, `role`, `telp`, `email`, `photo`, `registered`, `updated`) VALUES
-('012020', 'Auditor 1', 'T63BtTiIBlilJYWzavEWC/ILcH6SIpoHoEqb132mQio=', '5', NULL, 'test@mail.com', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
-('970037', 'Aldi Wiranata', 'lKh/KZx3AOcymafnyRNXfdLa/eaUfOkW9Gd4T7fCLW0=', '1', '081388098842', 'aldiw01@gmail.com', 'profile_photo_970037', '2020-05-07T04:51:54.211Z', '2020-06-05T09:19:39.053Z');
+('010101', 'guest', 'Qg0hNbPN7NLGKTKHLEpGCv424Iyz+61YEf2Eavg+LQ8=', '5', NULL, 'test@mail.com', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
+('123456', 'user', 'mPdsf6fDWqRMU4hQIKewxgJMvO+1tqGavhzREcDOiM8=', '2', NULL, '123456@telkom.co.id', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
+('970037', 'Aldi Wiranata', 'OgbSS2F9R43wwZBoQsIpxIl+0GvimhMMarH0/f3NapY=', '1', '081388098842', 'aldiw01@gmail.com', '', '2020-05-07T04:51:54.211Z', '2020-06-05T09:19:39.053Z');
 
 --
 -- Indexes for dumped tables

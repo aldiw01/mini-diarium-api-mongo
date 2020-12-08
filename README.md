@@ -13,7 +13,7 @@ $ git clone https://github.com/aldiw01/mini-diarium-api.git
 $ cd mini-diarium-api
 ```
 
-#### Import database mini-diarium.sql into mySQL server
+#### Import database mini_diarium.sql into mySQL server
 
 #### Install node and npm
 For windows version, you can get it here -> https://nodejs.org/en/download/ 
