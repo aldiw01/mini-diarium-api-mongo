@@ -55,7 +55,7 @@ router.get('/search/:id', (req, res) => {
   db.getUserSearch(req.params, res)
 })
 
-router.post('/', jwtMW, (req, res) => {
+router.post('/', (req, res) => {
   const password = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.password).digest(CIPHER_BASE);
   db.newUser(req.body, password, res)
 })

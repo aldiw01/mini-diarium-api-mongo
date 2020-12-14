@@ -26,11 +26,10 @@ module.exports = {
           name: items[1],
           // password: items[2],
           role: items[3],
-          telp: items[4],
-          email: items[5],
-          photo: items[6],
-          registered: items[7],
-          updated: items[8]
+          email: items[4],
+          photo: items[5],
+          registered: items[6],
+          updated: items[7]
         });
       });
       if (data.length < 1) {
@@ -42,7 +41,7 @@ module.exports = {
     c.end();
   },
   getUser: function (req, res) {
-    c.query("SELECT u.`id`, u.`name`, r.`name`, u.`telp`, u.`email`, u.`photo`, u.`registered`, u.`updated` FROM `users` u INNER JOIN `roles` r ON u.`role`=r.`id` WHERE u.`id`=?", [req.id], { metadata: true, useArray: true }, function (err, rows) {
+    c.query("SELECT u.`id`, u.`name`, r.`name`, u.`email`, u.`photo`, u.`registered`, u.`updated` FROM `users` u INNER JOIN `roles` r ON u.`role`=r.`id` WHERE u.`id`=?", [req.id], { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);
@@ -55,11 +54,10 @@ module.exports = {
           id: items[0],
           name: items[1],
           role: items[2],
-          telp: items[3],
-          email: items[4],
-          photo: items[5],
-          registered: items[6],
-          updated: items[7]
+          email: items[3],
+          photo: items[4],
+          registered: items[5],
+          updated: items[6]
         });
       });
       if (data.length < 1) {
@@ -85,11 +83,10 @@ module.exports = {
           name: items[1],
           // password: items[2],
           role: items[3],
-          telp: items[4],
-          email: items[5],
-          photo: items[6],
-          registered: items[7],
-          updated: items[8]
+          email: items[4],
+          photo: items[5],
+          registered: items[6],
+          updated: items[7]
         });
       });
       if (data.length < 1) {
@@ -116,11 +113,10 @@ module.exports = {
           name: items[1],
           // password: items[2],
           role: items[3],
-          telp: items[4],
-          email: items[5],
-          photo: items[6],
-          registered: items[7],
-          updated: items[8]
+          email: items[4],
+          photo: items[5],
+          registered: items[6],
+          updated: items[7]
         });
       });
       if (data.length < 1) {
@@ -137,8 +133,9 @@ module.exports = {
       req.id,
       req.name,
       password,
+      '2',
       req.email,
-      req.role,
+      '',
       waktu,
       waktu
     ];
@@ -146,7 +143,7 @@ module.exports = {
       res.send({ message: 'Bad Request: Parameters cannot empty.' });
       return
     }
-    c.query("INSERT INTO `users` (`id`, `name`, `password`, `email`, `role`, `registered`, `updated`) VALUES (?, ?, ?, ?, ?, ?, ?)", request, { metadata: true, useArray: true }, function (err, rows) {
+    c.query("INSERT INTO `users` (`id`, `name`, `password`, `role`, `email`, `photo`, `registered`, `updated`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", request, { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);
@@ -166,7 +163,6 @@ module.exports = {
     const waktu = new Date().toISOString();
     var request = [
       req.body.name,
-      req.body.telp,
       req.body.email,
       waktu,
       req.params.id
@@ -175,7 +171,7 @@ module.exports = {
       res.send({ message: 'Bad Request: Parameters cannot empty.' });
       return
     }
-    c.query("UPDATE `users` SET `name`=?, `telp`=?, `email`=?, `updated`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
+    c.query("UPDATE `users` SET `name`=?, `email`=?, `updated`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);

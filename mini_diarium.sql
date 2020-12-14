@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 08, 2020 at 05:32 AM
+-- Generation Time: Dec 14, 2020 at 06:44 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 5.6.33
 
@@ -21,6 +21,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `mini_diarium`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activities`
+--
+
+CREATE TABLE `activities` (
+  `id` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `name` text NOT NULL,
+  `status` int(11) NOT NULL,
+  `created` varchar(24) NOT NULL,
+  `updated` varchar(24) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -213,34 +228,35 @@ INSERT INTO `history` (`id`, `reference_id`, `user_id`, `step_id`, `message`, `c
 ('H1EP09SOBA', '010101', '010101', 'LOG1', '010101', '2020-12-08T04:31:30.154Z'),
 ('H1EP09T41C', '010101', '010101', 'LOG2', '010101', '2020-12-08T04:31:42.124Z'),
 ('H1EP09T945', '123456', '123456', 'LOG1', '123456', '2020-12-08T04:31:47.333Z'),
-('H1EP09THL5', '123456', '123456', 'LOG2', '123456', '2020-12-08T04:31:56.069Z');
+('H1EP09THL5', '123456', '123456', 'LOG2', '123456', '2020-12-08T04:31:56.069Z'),
+('H1EPBF64O1', '970037', '970037', 'LOG1', '970037', '2020-12-12T12:35:39.393Z'),
+('H1EPBHH060', '970037', '970037', 'LOG2', '970037', '2020-12-12T13:16:32.320Z'),
+('H1EPBHHDJC', '970037', '970037', 'LOG1', '970037', '2020-12-12T13:16:46.060Z'),
+('H1EPH1U332', '123456', '123456', 'LOG1', '123456', '2020-12-14T16:39:30.658Z'),
+('H1EPH1U5NA', '123456', '123456', 'LOG2', '123456', '2020-12-14T16:39:33.354Z'),
+('H1EPH1UAK8', '970037', '970037', 'LOG1', '970037', '2020-12-14T16:39:38.376Z'),
+('H1EPH2O1TT', '970037', '970037', 'LOG2', '970037', '2020-12-14T16:53:41.437Z'),
+('H1EPH41RNN', '121212', '121212', 'LOG1', '121212', '2020-12-14T17:16:31.351Z'),
+('H1EPH4K8DK', '121212', '121212', 'USR6', '121212', '2020-12-14T17:26:34.164Z'),
+('H1EPH4KEBM', '121212', '121212', 'LOG2', '121212', '2020-12-14T17:26:40.246Z'),
+('H1EPH4KKDK', '121212', '121212', 'LOG1', '121212', '2020-12-14T17:26:46.452Z'),
+('H1EPH4PT75', '121212', '121212', 'LOG2', '121212', '2020-12-14T17:29:39.301Z'),
+('H1EPH4SNQS', '123456', '123456', 'LOG1', '123456', '2020-12-14T17:31:12.092Z'),
+('H1EPH5IJ39', '123456', '123456', 'LOG2', '123456', '2020-12-14T17:43:08.137Z'),
+('H1EPH5ILQJ', '123456', '123456', 'LOG1', '123456', '2020-12-14T17:43:10.931Z');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `infos`
+-- Table structure for table `presences`
 --
 
-CREATE TABLE `infos` (
+CREATE TABLE `presences` (
   `id` varchar(64) NOT NULL,
-  `name` text NOT NULL,
-  `ACCESS_ROLES_PAGE` text NOT NULL,
-  `ACCESS_ROLES_READ` text NOT NULL,
-  `ACCESS_ROLES_WRITE` text NOT NULL,
-  `value` text NOT NULL
+  `user_id` varchar(64) NOT NULL,
+  `status` int(11) NOT NULL,
+  `created` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `infos`
---
-
-INSERT INTO `infos` (`id`, `name`, `ACCESS_ROLES_PAGE`, `ACCESS_ROLES_READ`, `ACCESS_ROLES_WRITE`, `value`) VALUES
-('archives', 'Arsip', '1, 2, 5', '1, 2', '1, 2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.'),
-('archives/accreditations', 'Arsip - Akreditasi', '1, 2, 5', '1, 2', '1, 2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.'),
-('archives/publications', 'Arsip - Informasi dan Publikasi', '1, 2, 5', '1, 2', '1, 2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.'),
-('archives/regulations', 'Arsip - Kebijakan dan Regulasi', '1, 2, 5', '1, 2', '1, 2', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.'),
-('register', 'Register', '1', '1', '1, 2', 'Register Page'),
-('users', 'Users', '1', '1', '1', 'Users Page');
 
 -- --------------------------------------------------------
 
@@ -337,7 +353,6 @@ CREATE TABLE `users` (
   `name` text NOT NULL,
   `password` text NOT NULL,
   `role` varchar(5) NOT NULL,
-  `telp` varchar(15) DEFAULT NULL,
   `email` text,
   `photo` text,
   `registered` varchar(24) DEFAULT NULL,
@@ -348,10 +363,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `password`, `role`, `telp`, `email`, `photo`, `registered`, `updated`) VALUES
-('010101', 'guest', 'Qg0hNbPN7NLGKTKHLEpGCv424Iyz+61YEf2Eavg+LQ8=', '5', NULL, 'test@mail.com', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
-('123456', 'user', 'mPdsf6fDWqRMU4hQIKewxgJMvO+1tqGavhzREcDOiM8=', '2', NULL, '123456@telkom.co.id', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
-('970037', 'Aldi Wiranata', 'OgbSS2F9R43wwZBoQsIpxIl+0GvimhMMarH0/f3NapY=', '1', '081388098842', 'aldiw01@gmail.com', '', '2020-05-07T04:51:54.211Z', '2020-06-05T09:19:39.053Z');
+INSERT INTO `users` (`id`, `name`, `password`, `role`, `email`, `photo`, `registered`, `updated`) VALUES
+('010101', 'guest', 'Qg0hNbPN7NLGKTKHLEpGCv424Iyz+61YEf2Eavg+LQ8=', '5', 'test@mail.com', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
+('121212', 'Test', '7VcoapVGWAXXcRJETh4YZCF/dU8qrz5k5h/6zQWpgzg=', '2', 'test@test.com', '', '2020-12-14T17:14:58.280Z', '2020-12-14T17:26:32.174Z'),
+('123456', 'user', 'mPdsf6fDWqRMU4hQIKewxgJMvO+1tqGavhzREcDOiM8=', '2', '123456@telkom.co.id', NULL, '2020-05-10T12:01:39.524Z', '2020-05-10T12:01:39.524Z'),
+('970037', 'Aldi Wiranata', 'OgbSS2F9R43wwZBoQsIpxIl+0GvimhMMarH0/f3NapY=', '1', 'aldiw01@gmail.com', '', '2020-05-07T04:51:54.211Z', '2020-06-05T09:19:39.053Z');
 
 --
 -- Indexes for dumped tables
@@ -371,12 +387,6 @@ ALTER TABLE `history`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK` (`user_id`,`step_id`),
   ADD KEY `step_id` (`step_id`);
-
---
--- Indexes for table `infos`
---
-ALTER TABLE `infos`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `roles`
