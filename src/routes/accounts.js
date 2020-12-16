@@ -34,7 +34,6 @@ router.post('/login', (req, res) => {
         id: data[0].id,
         name: data[0].name,
         role: data[0].role,
-        telp: data[0].telp,
         email: data[0].email,
         photo: data[0].photo,
         registered: data[0].registered,

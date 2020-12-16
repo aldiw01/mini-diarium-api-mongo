@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2020 at 06:44 PM
+-- Generation Time: Dec 17, 2020 at 12:42 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 5.6.33
 
@@ -36,6 +36,16 @@ CREATE TABLE `activities` (
   `created` varchar(24) NOT NULL,
   `updated` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `activities`
+--
+
+INSERT INTO `activities` (`id`, `user_id`, `name`, `status`, `created`, `updated`) VALUES
+('A1EPJCEFCU', '123456', 'test', 1, '2020-12-15T14:21:42.174Z', '2020-12-15T14:21:42.174Z'),
+('A1EPJCG9PI', '123456', 'hello', 1, '2020-12-15T14:22:41.970Z', '2020-12-15T14:22:41.970Z'),
+('A1EPJCHOUU', '123456', 'bebas', 1, '2020-12-15T14:23:30.270Z', '2020-12-15T14:23:30.270Z'),
+('A1EPJCIR6N', '123456', 'test', 1, '2020-12-15T14:24:05.335Z', '2020-12-15T14:24:05.335Z');
 
 -- --------------------------------------------------------
 
@@ -80,6 +90,7 @@ INSERT INTO `archives` (`id`, `name`, `year`, `info`, `standard_level_id`, `file
 ('A1E9FKJRKV', 'Pencegahan covid-19', 2020, 'v.1', 'P1', 'A1E9FKJRKV2020_Pencegahan covid-19.jpg'),
 ('A1E9FKM909', 'Pembatasan layanan pengujian', 2020, 'v.1', 'P1', 'A1E9FKM9092020_Pembatasan layanan pengujian.jpg'),
 ('A1EMT7MJ8L', 'Aldi Wiranata', 222, '1', 'P2', 'A1EMT7MJ8L_222_Aldi Wiranata.png'),
+('ASD123', 'Test', 2020, 'Test', 'I1', 'ASD123_2020_Test.js'),
 ('ASTM A90/A90M - 13', 'Standard Test Method for Weight [Mass] of Coating on Iron and Steel Articles with Zinc or Zinc-Alloy Coatings', 2018, '13', 'I1', 'ASTM A90A90M - 13_v2018_Standard Test Method for Weight Mass of Coating on Iron and Steel Articles with Zinc or ZincAlloy Coatings.pdf'),
 ('ASTM D792 - 08', 'Standard Test Methods for Density and Specific Gravity (Relative Density) of Plastics by Displacement', 2008, '8', 'I1', 'ASTM D792-08_v2007_Standard Test Methods for Density and Specific Gravity Relative Density of Plastics by Displacement.pdf'),
 ('BN RI NO 5 - 17JAN92 TAMBAHAN NO 210 & HAM RI- 8JUN18 & 2JULI18', 'Perusahaan Perseroan (Persero) PT Telekomunikasi Indonesia Tbk dan entitas anaknya', 2018, '1', 'N4', 'BN RI NO 5 - 17JAN92 TAMBAHAN NO 210 & HAM RI- 8JUN18 & 2JULI18_v2018_Perusahaan Perseroan Persero PT Telekomunikasi Indonesia Tbk dan entitas anaknya.pdf'),
@@ -243,7 +254,13 @@ INSERT INTO `history` (`id`, `reference_id`, `user_id`, `step_id`, `message`, `c
 ('H1EPH4PT75', '121212', '121212', 'LOG2', '121212', '2020-12-14T17:29:39.301Z'),
 ('H1EPH4SNQS', '123456', '123456', 'LOG1', '123456', '2020-12-14T17:31:12.092Z'),
 ('H1EPH5IJ39', '123456', '123456', 'LOG2', '123456', '2020-12-14T17:43:08.137Z'),
-('H1EPH5ILQJ', '123456', '123456', 'LOG1', '123456', '2020-12-14T17:43:10.931Z');
+('H1EPH5ILQJ', '123456', '123456', 'LOG1', '123456', '2020-12-14T17:43:10.931Z'),
+('H1EPH609KQ', '123456', '123456', 'LOG2', '123456', '2020-12-14T17:50:37.210Z'),
+('H1EPJ8SD8R', '123456', '123456', 'LOG1', '123456', '2020-12-15T13:19:24.443Z'),
+('H1EPJD2IOF', 'ASD123', '123456', 'ARV1', 'ASD123', '2020-12-15T14:32:40.975Z'),
+('H1EPKLR264', '123456', '123456', 'LOG1', '123456', '2020-12-16T02:25:06.244Z'),
+('H1EPLSGJ8E', '970037', '970037', 'LOG2', '970037', '2020-12-16T13:40:57.742Z'),
+('H1EPLSGMMJ', '970037', '970037', 'LOG1', '970037', '2020-12-16T13:41:01.267Z');
 
 -- --------------------------------------------------------
 
@@ -257,6 +274,14 @@ CREATE TABLE `presences` (
   `status` int(11) NOT NULL,
   `created` varchar(24) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `presences`
+--
+
+INSERT INTO `presences` (`id`, `user_id`, `status`, `created`) VALUES
+('P1EPJJVDR1', '970037', 1, '2020-12-15T16:33:17.665Z'),
+('P1EPJKFJPU', '970037', 2, '2020-12-15T16:42:08.062Z');
 
 -- --------------------------------------------------------
 
@@ -374,6 +399,12 @@ INSERT INTO `users` (`id`, `name`, `password`, `role`, `email`, `photo`, `regist
 --
 
 --
+-- Indexes for table `activities`
+--
+ALTER TABLE `activities`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `archives`
 --
 ALTER TABLE `archives`
@@ -387,6 +418,12 @@ ALTER TABLE `history`
   ADD PRIMARY KEY (`id`),
   ADD KEY `FK` (`user_id`,`step_id`),
   ADD KEY `step_id` (`step_id`);
+
+--
+-- Indexes for table `presences`
+--
+ALTER TABLE `presences`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `roles`
