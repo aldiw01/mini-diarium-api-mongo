@@ -20,6 +20,10 @@ router.get('/:id', (req, res) => {
   db.getPresence(req.params, res)
 })
 
+router.get('/user/:id/:date', jwtMW, (req, res) => {
+  db.getPresenceUser(req.params, res)
+})
+
 router.post('/', jwtMW, (req, res) => {
   db.newPresence(req.body, res)
 })

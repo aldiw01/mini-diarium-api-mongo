@@ -63,10 +63,42 @@ module.exports = {
     });
     c.end();
   },
+  getPresenceUser: function (req, res) {
+    const transform = new Date(req.date).toISOString()
+    const date = transform.split('T')
+    var request = [
+      req.id,
+      date[0] + "%"
+    ];
+    c.query("SELECT * FROM `presences` WHERE user_id=? AND created LIKE ? ORDER BY created DESC", request, { metadata: true, useArray: true }, function (err, rows) {
+      if (err) {
+        res.send({ message: err.message });
+        console.log(err);
+        return
+      }
+
+      const col = Object.keys(rows.info.metadata)
+      var data = [];
+      rows.forEach(function (items) {
+        data.push({
+          [col[0]]: items[0],
+          [col[1]]: items[1],
+          [col[2]]: items[2],
+          [col[3]]: items[3]
+        })
+      });
+      if (data.length < 1) {
+        res.status(404).send({ message: 'Data not found.' });
+      } else {
+        res.json(data);
+      }
+    });
+    c.end();
+  },
   newPresence: function (req, res) {
     const waktu = new Date().toISOString();
     var request = [
-      req.id,
+      'P' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       req.user_id,
       req.status,
       waktu
