@@ -4,6 +4,16 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const routes = require('./src/routes')
 
+//------------------------tambahan untuk mongoose
+const mongoose = require('mongoose');
+const url = process.env.APP_DATABASE_HOST_MONGO;
+const connect = mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
+
+connect.then( (db) => {
+  console.log("Connected correctly to server")
+}, (err) => { console.log(err); });
+//------------------------end tambahan untuk mongoose
+
 // Instantiating the express app
 const app = express();
 // See the react auth blog in which cors is required for access

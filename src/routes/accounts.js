@@ -1,7 +1,8 @@
 
 const express = require('express')
 var router = express.Router()
-var db = require('../models/accounts')
+// var db = require('../models/accounts')
+var db = require('../models/accounts~')
 const jwt = require('jsonwebtoken')
 const exjwt = require('express-jwt')
 const crypto = require("crypto")
@@ -27,7 +28,7 @@ router.post('/login', (req, res) => {
   const { email } = req.body;
   const password = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.password).digest(CIPHER_BASE);
 
-  db.cekLogin(email, password, function (err, data) {
+  db.cekLogin(email, password, function (err, data) { 
     if (data.length === 1 && (data[0].role !== "9")) {
       //If all credentials are correct do this
       let token = jwt.sign({

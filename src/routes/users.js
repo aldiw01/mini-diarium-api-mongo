@@ -2,7 +2,8 @@
 const express = require('express')
 var router = express.Router()
 const multer = require('multer')
-var db = require('../models/users')
+// var db = require('../models/users')
+var db = require('../models/users~')
 const exjwt = require('express-jwt')
 const crypto = require("crypto")
 var path = require('path')
@@ -39,7 +40,7 @@ const HASH_ALGORITHM = process.env.APP_HASH_ALGORITHM
 /////////////////////////////////////////////////////////////////////////////////////////////
 // API Users => /api/users/
 
-router.get('/', jwtMW, (req, res) => {
+router.get('/', /*jwtMW,*/ (req, res) => {
   db.getUserAll(req.body, res)
 })
 
