@@ -12,7 +12,7 @@ module.exports = {
   // ACTIVITY MODELS
 
   getActivityAll: function (req, res) {
-    c.query("SELECT * FROM `activities`", null, { metadata: true, useArray: true }, function (err, rows) {
+    c.query("SELECT * FROM `activities` ORDER BY `created` DESC", null, { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);
@@ -71,7 +71,7 @@ module.exports = {
     var request = [
       req.id
     ];
-    c.query("SELECT * FROM `activities` WHERE user_id=?", request, { metadata: true, useArray: true }, function (err, rows) {
+    c.query("SELECT * FROM `activities` WHERE user_id=? ORDER BY `created` DESC", request, { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);
@@ -103,7 +103,39 @@ module.exports = {
       req.id,
       req.status
     ];
-    c.query("SELECT * FROM `activities` WHERE user_id=? AND status=?", request, { metadata: true, useArray: true }, function (err, rows) {
+    c.query("SELECT * FROM `activities` WHERE user_id=? AND status=? ORDER BY `created` DESC", request, { metadata: true, useArray: true }, function (err, rows) {
+      if (err) {
+        res.send({ message: err.message });
+        console.log(err);
+        return
+      }
+
+      const col = Object.keys(rows.info.metadata)
+      var data = [];
+      rows.forEach(function (items) {
+        data.push({
+          [col[0]]: items[0],
+          [col[1]]: items[1],
+          [col[2]]: items[2],
+          [col[3]]: items[3],
+          [col[4]]: items[4],
+          [col[5]]: items[5]
+        })
+      });
+      if (data.length < 1) {
+        res.status(404).send({ message: 'Data not found.' });
+      } else {
+        res.json(data);
+      }
+    });
+    c.end();
+  },
+  getActivityTypeExcept: function (req, res) {
+    var request = [
+      req.id,
+      req.status
+    ];
+    c.query("SELECT * FROM `activities` WHERE user_id=? AND status!=? ORDER BY `created` DESC", request, { metadata: true, useArray: true }, function (err, rows) {
       if (err) {
         res.send({ message: err.message });
         console.log(err);
