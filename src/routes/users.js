@@ -48,9 +48,9 @@ router.get('/:id', (req, res) => {
   db.getUser(req.params, res)
 })
 
-router.get('/role/:id', jwtMW, (req, res) => {
-  db.getUserRole(req.params, res)
-})
+// router.get('/role/:id', /* jwtMW, */ (req, res) => {
+//   db.getUserRole(req.params, res)
+// })
 
 router.get('/search/:id', (req, res) => {
   db.getUserSearch(req.params, res)
@@ -61,11 +61,11 @@ router.post('/', (req, res) => {
   db.newUser(req.body, password, res)
 })
 
-router.put('/:id', jwtMW, (req, res) => {
+router.put('/:id', /* jwtMW, */ (req, res) => {
   db.updateUser(req, res)
 })
 
-router.put('/password/:id', jwtMW, (req, res) => {
+router.put('/password/:id', /* jwtMW, */ (req, res) => {
   req.body.password = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.new).digest(CIPHER_BASE);
   req.body.password_old = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.old).digest(CIPHER_BASE);
   db.updateUserPassword(req, res)

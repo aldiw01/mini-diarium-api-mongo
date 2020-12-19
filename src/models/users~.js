@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Roles = require('./roles~');
+const escapeStringRegexp = require('escape-string-regexp');
+const { request } = require('express');
 
 const userSchema = new Schema({
   id: {
@@ -15,9 +16,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
-  },
-  role_id: { //tambahan referensi ke model Roles
-    type: { type: Schema.Types.ObjectId, ref: "Roles"}
   },
   role: {
     type: String,
@@ -52,7 +50,7 @@ module.exports = {
   /////////////////////////////////////////////////////////////////////////////////////////////
   // USERS MODELS
   getUserAll: function (req, res) {
-    Users.find({}).populate('role_id')
+    Users.find({})
       .then((users) => {
         if (Object.entries(users).length < 1) {
           res.status(404).send({ message: 'Data not found. (mongo)' });
@@ -84,35 +82,28 @@ module.exports = {
       });
   },
   getUser: function (req, res) {
-    var aUser = {};
     Users.find({ id: req.id }).
-      then((user) => {
-        if (Object.entries(user).length < 1) {
+      then((users) => {
+        if (Object.entries(users).length < 1) {
           res.status(404).send({ message: 'Data not found. (mongo)' });
         } else {
-          aUser = {
-            id: user.id,
-            name: user.id,
-            role_id: user.role,
-            email: user.email,
-            photo: user.photo,
-            registered: user.registered,
-            updated: user.updated
-          };
-        }
-      })
-      .then(() => {
-        Roles.find({ id: aUser.role_id })
-          .then((role) => {
-            aUser.role = role.name;
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(aUser);
-          })
-          .catch((err) => {
-            res.send({ message: err.message });
-            console.log(err);
+          var data = [];
+          users.forEach(function (user) {
+            data.push({
+              id: user.id,
+              name: user.name,
+              // password: user.password,
+              role: user.role,
+              email: user.email,
+              photo: user.photo,
+              registered: user.registered,
+              updated: user.updated
+            });
           });
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(data);
+        }
       }, (err) => {
         res.send({ message: err.message });
         console.log(err)
@@ -151,36 +142,42 @@ module.exports = {
   //     });
   //     c.end();
   //   },
-  //   getUserSearch: function (req, res) {
-  //     var request = ["%" + req.id + "%", "%" + req.id + "%"];
-  //     c.query("SELECT * FROM `users` WHERE `id` LIKE ? OR `name` LIKE ? ORDER BY `role`", request, { metadata: true, useArray: true }, function (err, rows) {
-  //       if (err) {
-  //         res.send({ message: err.message });
-  //         console.log(err);
-  //         return
-  //       }
+  getUserSearch: function (req, res) {
+    const $regex = escapeStringRegexp(req.id);
+    Users.find(
+      { $or: [{ id: { $regex } }, { name: { $regex } }] }
+    )
+      .then((users) => {
+        if (Object.entries(users).length < 1) {
+          res.status(404).send({ message: 'Data not found. (mongo)' });
+        } else {
+          var data = [];
+          users.forEach(function (user) {
+            data.push({
+              id: user.id,
+              name: user.name,
+              // password: user.password,
+              role: user.role,
+              email: user.email,
+              photo: user.photo,
+              registered: user.registered,
+              updated: user.updated
+            });
+          });
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(data);
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err)
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
 
-  //       var data = [];
-  //       rows.forEach(function (items) {
-  //         data.push({
-  //           id: items[0],
-  //           name: items[1],
-  //           // password: items[2],
-  //           role: items[3],
-  //           email: items[4],
-  //           photo: items[5],
-  //           registered: items[6],
-  //           updated: items[7]
-  //         });
-  //       });
-  //       if (data.length < 1) {
-  //         res.status(404).send('Data not found.');
-  //       } else {
-  //         res.json(data);
-  //       }
-  //     });
-  //     c.end();
-  //   },
   newUser: function (req, password, res) {
     // if (req.id === undefined || req.name === undefined || req.password === undefined || req.email === undefined) {
     //   res.send({ message: 'Bad Request: Parameters cannot empty.' });
@@ -199,7 +196,7 @@ module.exports = {
       updated: waktu
     };
 
-    Users.insertMany([request])
+    Users.create(request)
       .then(() => {
         res.json({
           //affectedRows: rows.info.affectedRows,
@@ -215,78 +212,75 @@ module.exports = {
         res.send({ message: err.message });
         console.log(err);
       });
-  }
-  //   ,
-  //   updateUser: function (req, res) {
-  //     const waktu = new Date().toISOString();
-  //     var request = [
-  //       req.body.name,
-  //       req.body.email,
-  //       waktu,
-  //       req.params.id
-  //     ];
-  //     if (request.includes(undefined)) {
-  //       res.send({ message: 'Bad Request: Parameters cannot empty.' });
-  //       return
-  //     }
-  //     c.query("UPDATE `users` SET `name`=?, `email`=?, `updated`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
-  //       if (err) {
-  //         res.send({ message: err.message });
-  //         console.log(err);
-  //         return
-  //       }
+  },
+  updateUser: function (req, res) {
+    const waktu = new Date().toISOString();
+    const request = {
+      name: req.body.name,
+      email: req.body.email,
+      updated: waktu
+    };
+    Users.findOneAndUpdate({ id: req.params.id }, request)
+      .then(() => {
+        res.json({
+          // affectedRows: rows.info.affectedRows,
+          err: null,
+          message: "User has updated successfully",
+          success: true
+        });
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err)
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+  updateUserPassword: function (req, res) {
+    const request1 = {
+      id: req.params.id,
+      password: req.body.password_old
+    };
 
-  //       res.json({
-  //         affectedRows: rows.info.affectedRows,
-  //         err: null,
-  //         message: "User has updated successfully",
-  //         success: true
-  //       });
-  //     });
-  //     c.end();
-  //   },
-  //   updateUserPassword: function (req, res) {
-  //     const waktu = new Date().toISOString();
-  //     var request1 = [
-  //       req.params.id,
-  //       req.body.password_old
-  //     ];
-  //     var request2 = [
-  //       req.body.password,
-  //       waktu,
-  //       req.params.id
-  //     ];
-  //     if (request1.includes(undefined) || request2.includes(undefined)) {
-  //       res.send({ message: 'Bad Request: Parameters cannot empty.' });
-  //       return
-  //     }
-  //     c.query("SELECT * FROM `users` WHERE `id`=? AND `password`=?", request1, { metadata: true, useArray: true }, function (err, rows) {
-  //       if (err) {
-  //         res.send({ message: err.message });
-  //         console.log(err);
-  //         return
-  //       }
-  //       if (rows.length < 1) {
-  //         res.send({ message: "Password is incorrect, please try again." });
-  //       } else {
-  //         c.query("UPDATE `users` SET `password`=?, `updated`=? WHERE `id`=?", request2, { metadata: true, useArray: true }, function (err, rows) {
-  //           if (err) {
-  //             res.send({ message: err.message });
-  //             console.log(err);
-  //             return
-  //           }
+    const waktu = new Date().toISOString();
+    
+    const request2 = {
+      password: req.body.password,
+      updated: waktu
+    };
 
-  //           res.json({
-  //             affectedRows: rows.info.affectedRows,
-  //             err: null,
-  //             message: "User Password has updated successfully",
-  //             success: true
-  //           });
-  //         });
-  //       }
-  //     });
-  //     c.end();
-  //   },
+    Users.findOneAndUpdate(request1, request2)
+      .then((user) => {
+        // if (Object.entries(user).length < 1) {
+        //   res.send({ message: "User or Password is incorrect, please try again." });
+        // } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({
+            // affectedRows: rows.info.affectedRows,
+            err: null,
+            message: "Password has been updated successfully",
+            success: true
+          });
+        // }
+      }, (err) => {
+        // res.send({ message: err.message });
+        // console.log(err)
+        res.send({ message: "User or Password is incorrect, please try again." });
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+    
+    
+    // if (request1.includes(undefined) || request2.includes(undefined)) {
+    //   res.send({ message: 'Bad Request: Parameters cannot empty.' });
+    //   return
+    // }
+
+  },
   //   updateUserRole: function (req, res) {
   //     const waktu = new Date().toISOString();
   //     var request = [
@@ -314,33 +308,33 @@ module.exports = {
   //     });
   //     c.end();
   //   },
-  //   updateUserPhoto: function (req, res) {
-  //     const waktu = new Date().toISOString();
-  //     var request = [
-  //       req.body.photo,
-  //       waktu,
-  //       req.params.id
-  //     ];
-  //     if (request.includes(undefined) || request.includes("")) {
-  //       res.send({ message: 'Bad Request: Parameters cannot empty.' });
-  //       return
-  //     }
-  //     c.query("UPDATE `users` SET `photo`=?, `updated`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
-  //       if (err) {
-  //         res.send({ message: err.message });
-  //         console.log(err);
-  //         return
-  //       }
+  updateUserPhoto: function (req, res) {
+    const waktu = new Date().toISOString();
+    var request = [
+      req.body.photo,
+      waktu,
+      req.params.id
+    ];
+    if (request.includes(undefined) || request.includes("")) {
+      res.send({ message: 'Bad Request: Parameters cannot empty.' });
+      return
+    }
+    c.query("UPDATE `users` SET `photo`=?, `updated`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
+      if (err) {
+        res.send({ message: err.message });
+        console.log(err);
+        return
+      }
 
-  //       res.json({
-  //         affectedRows: rows.info.affectedRows,
-  //         err: null,
-  //         message: "Profile photo has updated successfully",
-  //         success: true
-  //       });
-  //     });
-  //     c.end();
-  //   },
+      res.json({
+        affectedRows: rows.info.affectedRows,
+        err: null,
+        message: "Profile photo has updated successfully",
+        success: true
+      });
+    });
+    c.end();
+  },
   //   deactivateUser: function (req, res) {
   //     const waktu = new Date().toISOString();
   //     var request = [

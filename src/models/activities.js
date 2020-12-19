@@ -79,11 +79,51 @@ module.exports = {
 
     },
 
+    getActivityUser: function (req, res) {
+        Activities.find({ user_id: req.id })
+            .then((activities) => {
+                if (Object.entries(activities).length < 1) {
+                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                } else {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(activities);
+                }
+            }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            })
+            .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            });
+    },
+
+    getActivityType: function (req, res) {
+        Activities.find({ user_id: req.id, status: req.status })
+            .then((activities) => {
+                if (Object.entries(activities).length < 1) {
+                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                } else {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(activities);
+                }
+            }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            })
+            .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            });
+    },
+
     newActivity: function (req, res) {
-        if (req.user_id === undefined || req.user_id === "" || req.name === undefined || req.name === "" || req.status === undefined || req.status === "") {
-            res.send({ message: 'Bad Request: Parameters cannot empty.(mongo)' });
-            return
-        }
+        // if (req.user_id === undefined || req.user_id === "" || req.name === undefined || req.name === "" || req.status === undefined || req.status === "") {
+        //     res.send({ message: 'Bad Request: Parameters cannot empty.(mongo)' });
+        //     return
+        // }
         const waktu = new Date().toISOString();
         const request = {
             id: 'A' + new Date(waktu).valueOf().toString(32).toUpperCase(),
@@ -112,10 +152,10 @@ module.exports = {
             });
     },
     updateActivity: function (req, res) {
-        if (req.body.name === undefined || req.body.name === "" || req.body.status === undefined || req.body.status === "") {
-            res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
-            return
-        }
+        // if (req.body.name === undefined || req.body.name === "" || req.body.status === undefined || req.body.status === "") {
+        //     res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
+        //     return
+        // }
         const request = {
             name: req.body.name,
             status: req.body.status
@@ -139,10 +179,10 @@ module.exports = {
             });
     },
     deleteActivity: function (req, res) {
-        if (req.id === undefined || req.id === "") {
-            res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
-            return
-        }
+        // if (req.id === undefined || req.id === "") {
+        //     res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
+        //     return
+        // }
         Activities.deleteOne({ id: req.id })
             .then(() => {
                 // if (rows.info.affectedRows < 1) {
