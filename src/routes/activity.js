@@ -28,6 +28,10 @@ router.get('/user/:id/:status', jwtMW, (req, res) => {
   db.getActivityType(req.params, res)
 })
 
+router.get('/user/:id/:status/exception', jwtMW, (req, res) => {
+  db.getActivityTypeExcept(req.params, res)
+})
+
 router.post('/', jwtMW, (req, res) => {
   db.newActivity(req.body, res)
 })
