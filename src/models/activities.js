@@ -39,10 +39,10 @@ module.exports = {
     // ACTIVITY MODELS
 
     getActivityAll: function (req, res) {
-        Activities.find({})
+        Activities.find({}).sort({ created: 'desc' })
             .then((activities) => {
-                if (Object.entries(activities).length < 1) {
-                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                if (activities == null) {
+                    res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
@@ -61,8 +61,8 @@ module.exports = {
     getActivity: function (req, res) {
         Activities.find({ id: req.id })
             .then((activity) => {
-                if (Object.entries(activity).length < 1) {
-                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                if (activity == null) {
+                    res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
@@ -80,10 +80,10 @@ module.exports = {
     },
 
     getActivityUser: function (req, res) {
-        Activities.find({ user_id: req.id })
+        Activities.find({ user_id: req.id }).sort({ created: 'desc' })
             .then((activities) => {
-                if (Object.entries(activities).length < 1) {
-                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                if (activities == null) {
+                    res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
@@ -100,10 +100,31 @@ module.exports = {
     },
 
     getActivityType: function (req, res) {
-        Activities.find({ user_id: req.id, status: req.status })
+        Activities.find({ user_id: req.id, status: req.status }).sort({ created: 'desc' })
             .then((activities) => {
-                if (Object.entries(activities).length < 1) {
-                    res.status(404).send({ message: 'Data not found. (mongo)' });
+                if (activities == null) {
+                    res.status(404).send({ message: 'Data not found.' });
+                } else {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(activities);
+                }
+            }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            })
+            .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+            });
+    },
+
+    getActivityTypeExcept: function (req, res) {
+
+        Activities.find({ user_id: req.id, status: { $ne: req.status } }).sort({ created: 'desc' })
+            .then((activities) => {
+                if (activities == null) {
+                    res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
@@ -120,10 +141,6 @@ module.exports = {
     },
 
     newActivity: function (req, res) {
-        // if (req.user_id === undefined || req.user_id === "" || req.name === undefined || req.name === "" || req.status === undefined || req.status === "") {
-        //     res.send({ message: 'Bad Request: Parameters cannot empty.(mongo)' });
-        //     return
-        // }
         const waktu = new Date().toISOString();
         const request = {
             id: 'A' + new Date(waktu).valueOf().toString(32).toUpperCase(),
@@ -139,7 +156,7 @@ module.exports = {
                 res.json({
                     // affectedRows: rows.info.affectedRows,
                     err: null,
-                    message: "Activity has registered successfully (mongo)",
+                    message: "Activity has been registered successfully.",
                     success: true
                 });
             }, (err) => {
@@ -152,13 +169,15 @@ module.exports = {
             });
     },
     updateActivity: function (req, res) {
-        // if (req.body.name === undefined || req.body.name === "" || req.body.status === undefined || req.body.status === "") {
-        //     res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
-        //     return
-        // }
+        if (req.body.name == undefined || req.body.name == "" || req.body.status == undefined || req.body.status == "" || req.params.id == undefined || req.params.id == "") {
+            res.send({ message: 'Bad Request: Parameters cannot empty.' });
+            return
+        }
+        const waktu = new Date().toISOString();
         const request = {
             name: req.body.name,
-            status: req.body.status
+            status: req.body.status,
+            updated: waktu
         };
 
         Activities.updateOne({ id: req.params.id }, request)
@@ -166,7 +185,7 @@ module.exports = {
                 res.json({
                     // affectedRows: rows.info.affectedRows,
                     err: null,
-                    message: "Activity has been updated successfully (mongo)",
+                    message: "Activity has been updated successfully.",
                     success: true
                 });
             }, (err) => {
@@ -179,22 +198,22 @@ module.exports = {
             });
     },
     deleteActivity: function (req, res) {
-        // if (req.id === undefined || req.id === "") {
-        //     res.send({ message: 'Bad Request: Parameters cannot empty. (mongo)' });
-        //     return
-        // }
+        if (req.id === undefined || req.id === "") {
+            res.send({ message: 'Bad Request: Parameters cannot empty.' });
+            return
+        }
         Activities.deleteOne({ id: req.id })
-            .then(() => {
-                // if (rows.info.affectedRows < 1) {
-                //     res.status(404).send({ message: 'Data not found.' });
-                // } else {
-                res.json({
-                    // affectedRows: rows.info.affectedRows,
-                    err: null,
-                    message: "Activity has deleted successfully (mongo)",
-                    success: true
-                });
-                // }
+            .then((activity) => {
+                if (activity == null) {
+                    res.status(404).send({ message: 'Data not found.' });
+                } else {
+                    res.json({
+                        // affectedRows: rows.info.affectedRows,
+                        err: null,
+                        message: "Activity has been deleted successfully.",
+                        success: true
+                    });
+                }
             }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);
@@ -207,15 +226,15 @@ module.exports = {
     deleteActivityAll: function (req, res) {
         Activities.deleteMany({})
             .then(() => {
-                // if (rows.info.affectedRows < 1) {
-                //     res.status(404).send({ message: 'Data not found.' });
-                // } else {
-                res.json({
-                    //affectedRows: rows.info.affectedRows,
-                    message: "All Activity has deleted successfully (mongo)",
-                    success: true
-                });
-                // }
+                if (activity == null) {
+                    res.status(404).send({ message: 'Data not found.' });
+                } else {
+                    res.json({
+                        //affectedRows: rows.info.affectedRows,
+                        message: "All Activity has been deleted successfully.",
+                        success: true
+                    });
+                }
             }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);

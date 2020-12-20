@@ -4,7 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const routes = require('./src/routes')
 
-//------------------------tambahan untuk mongoose
+//Connect MongoDB
 const mongoose = require('mongoose');
 const url = process.env.APP_DATABASE_HOST_MONGO;
 const connect = mongoose.connect(url, {
@@ -17,7 +17,7 @@ const connect = mongoose.connect(url, {
 connect.then( (db) => {
   console.log("Connected correctly to server")
 }, (err) => { console.log(err); });
-//------------------------end tambahan untuk mongoose
+
 
 // Instantiating the express app
 const app = express();

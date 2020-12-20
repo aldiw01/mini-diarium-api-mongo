@@ -1,4 +1,3 @@
-
 const express = require('express')
 var router = express.Router()
 var db = require('../models/presences')
@@ -10,7 +9,7 @@ const jwtMW = exjwt({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// API Presences => /api/presences/
+// API Presences => /api/presence/
 
 router.get('/', jwtMW, (req, res) => {
   db.getPresenceAll(req.body, res)

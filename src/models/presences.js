@@ -1,10 +1,30 @@
-const Client = require('mariasql');
-const c = new Client({
-  host: process.env.APP_DATABASE_HOST,
-  user: process.env.APP_DATABASE_USER,
-  password: process.env.APP_DATABASE_PASSWORD,
-  db: process.env.APP_DATABASE_DB
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const presenceSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  user_id: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: Number,
+    default: 2,
+    required: true
+  },
+  created: {
+    type: Date,
+    required: true
+  }
+}, {
+  timestamps: true
 });
+
+const Presences = mongoose.model('Presence', presenceSchema);
 
 module.exports = {
 
@@ -12,186 +32,207 @@ module.exports = {
   // INFO PRESENCES
 
   getPresenceAll: function (req, res) {
-    c.query("SELECT * FROM `presences`", null, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
+    Presences.find({})
+      .then((presences) => {
+        if (presences == null) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          // var data = [];
+          // presences.forEach(function (presence) {
+          //   data.push({
+          //     id: presence.id,
+          //     user_id: presence.user_id,
+          //     status: presence.status,
+          //     created: presence.created
+          //   })
+          // });
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(presences);
+        }
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
-        return
-      }
-
-      const col = Object.keys(rows.info.metadata)
-      var data = [];
-      rows.forEach(function (items) {
-        data.push({
-          [col[0]]: items[0],
-          [col[1]]: items[1],
-          [col[2]]: items[2],
-          [col[3]]: items[3]
-        })
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
       });
-      if (data.length < 1) {
-        res.status(404).send({ message: 'Data not found.' });
-      } else {
-        res.json(data);
-      }
-    });
-    c.end();
   },
+
   getPresence: function (req, res) {
-    c.query("SELECT * FROM `presences` WHERE id=?", [req.id], { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
+    Presences.find({ id: req.id })
+      .then((presences) => {
+        if (presences == null) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          // var data = [];
+          // presences.forEach(function (presence) {
+          //   data.push({
+          //     id: presence.id,
+          //     user_id: presence.user_id,
+          //     status: presence.status,
+          //     created: presence.created
+          //   })
+          // });
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(presences);
+        }
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
-        return
-      }
-
-      const col = Object.keys(rows.info.metadata)
-      var data = [];
-      rows.forEach(function (items) {
-        data.push({
-          [col[0]]: items[0],
-          [col[1]]: items[1],
-          [col[2]]: items[2],
-          [col[3]]: items[3]
-        })
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
       });
-      if (data.length < 1) {
-        res.status(404).send({ message: 'Data not found.' });
-      } else {
-        res.json(data);
-      }
-    });
-    c.end();
   },
+
   getPresenceUser: function (req, res) {
-    const transform = new Date(req.date).toISOString()
-    const date = transform.split('T')
-    var request = [
-      req.id,
-      date[0] + "%"
-    ];
-    c.query("SELECT * FROM `presences` WHERE user_id=? AND created LIKE ? ORDER BY created DESC", request, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
+    const transform = new Date(req.date).toISOString();
+    const date = transform.split('T');
+    const $regex = escapeStringRegexp(date[0]);
+    var request = {
+      user_id: req.id,
+      created: { $regex }
+    };
+
+    Presences.find(request).sort({ created: 'desc' })
+      .then((presences) => {
+        if (presences == null) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          // var data = [];
+          // presences.forEach(function (items) {
+          //   data.push({
+          //     [col[0]]: items[0],
+          //     [col[1]]: items[1],
+          //     [col[2]]: items[2],
+          //     [col[3]]: items[3]
+          //   })
+          // });
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(presences);
+        }
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
-        return
-      }
-
-      const col = Object.keys(rows.info.metadata)
-      var data = [];
-      rows.forEach(function (items) {
-        data.push({
-          [col[0]]: items[0],
-          [col[1]]: items[1],
-          [col[2]]: items[2],
-          [col[3]]: items[3]
-        })
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
       });
-      if (data.length < 1) {
-        res.status(404).send({ message: 'Data not found.' });
-      } else {
-        res.json(data);
-      }
-    });
-    c.end();
   },
+
   newPresence: function (req, res) {
     const waktu = new Date().toISOString();
-    var request = [
-      'P' + new Date(waktu).valueOf().toString(32).toUpperCase(),
-      req.user_id,
-      req.status,
-      waktu
-    ];
-    if (request.includes(undefined) || request.includes("")) {
-      res.send({ message: 'Bad Request: Parameters cannot empty.' });
-      return
-    }
-    c.query("INSERT INTO `presences` (`id`, `user_id`, `status`, `created`) VALUES (?, ?, ?, ?)", request, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
+    var request = {
+      id: 'P' + new Date(waktu).valueOf().toString(32).toUpperCase(),
+      user_id: req.user_id,
+      status: req.status,
+      created: waktu
+    };
+
+    Presences.create(request)
+      .then((request) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+          // affectedRows: rows.info.affectedRows,
+          err: null,
+          message: "Presence has been registered successfully.",
+          success: true
+        });
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
-        return
-      }
-
-      res.json({
-        affectedRows: rows.info.affectedRows,
-        err: null,
-        message: "Presence has registered successfully",
-        success: true
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
       });
-    });
-    c.end();
   },
+
   updatePresence: function (req, res) {
-    var request = [
-      req.body.status,
-      req.params.id
-    ];
-    if (request.includes(undefined) || request.includes("")) {
+    if (req.body.status == undefined || req.body.status == "" || req.params.id == undefined || req.params.id == "") {
       res.send({ message: 'Bad Request: Parameters cannot empty.' });
       return
     }
-    c.query("UPDATE `presences` SET `status`=? WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
-        res.send({ message: err.message });
-        console.log(err);
-        return
-      }
 
-      res.json({
-        affectedRows: rows.info.affectedRows,
-        err: null,
-        message: "Presence has updated successfully",
-        success: true
-      });
-    });
-    c.end();
-  },
-  deletePresence: function (req, res) {
-    var request = [req.id];
-    if (request.includes(undefined) || request.includes("")) {
-      res.send({ message: 'Bad Request: Parameters cannot empty.' });
-      return
-    }
-    c.query("DELETE FROM `presences` WHERE `id`=?", request, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
-        res.send({ message: err.message });
-        console.log(err);
-        return
-      }
-
-      if (rows.info.affectedRows < 1) {
-        res.status(404).send({ message: 'Data not found.' });
-      } else {
+    Presences.findOneAndUpdate({ id: req.params.id }, {status: req.body.status} )
+      .then((presence) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
         res.json({
           affectedRows: rows.info.affectedRows,
           err: null,
-          message: "Presence has deleted successfully",
+          message: "Presence has been updated successfully",
           success: true
         });
-      }
-    });
-    c.end();
-  },
-  deletePresenceAll: function (req, res) {
-    c.query("DELETE FROM `presences`", null, { metadata: true, useArray: true }, function (err, rows) {
-      if (err) {
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
-        return
-      }
-      console.log(rows.info)
-      if (rows.info.affectedRows < 1) {
-        res.status(404).send({ message: 'Data not found.' });
-      } else {
-        res.json({
-          affectedRows: rows.info.affectedRows,
-          message: "All Presence has deleted successfully :[",
-          success: true
-        });
-      }
-    });
-    c.end();
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
+  deletePresence: function (req, res) {
+    if (req.id == undefined || req.id == "") {
+      res.send({ message: 'Bad Request: Parameters cannot empty.' });
+      return
+    }
+
+    Presences.deleteOne({ id: req.id })
+      .then((presence) => {
+        if (presence == null) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({
+            // affectedRows: rows.info.affectedRows,
+            err: null,
+            message: "Presence has been deleted successfully",
+            success: true
+          });
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
+  deletePresenceAll: function (req, res) {
+    Presences.deleteMany({})
+      .then((presences) => {
+        if (presences == null) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({
+            // affectedRows: rows.info.affectedRows,
+            err: null,
+            message: "All Presence has been deleted successfully",
+            success: true
+          });
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
   }
 }

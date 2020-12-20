@@ -1,8 +1,6 @@
-
 const express = require('express')
 var router = express.Router()
-// var db = require('../models/accounts')
-var db = require('../models/accounts~')
+var db = require('../models/accounts')
 const jwt = require('jsonwebtoken')
 const exjwt = require('express-jwt')
 const crypto = require("crypto")
@@ -63,52 +61,8 @@ router.post('/login', (req, res) => {
   });
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-// Forgot and Reset Password
-
-router.post('/forgot-password', (req, res) => {
-  const token = crypto.randomBytes(16).toString('hex');
-  db.forgotPassword(req.body, res, token);
-})
-
-router.get('/forgot-password/get-token/:token', (req, res) => {
-  db.forgotPassword_getToken(req.params, res);
-})
-
-router.put('/forgot-password/edit-password', (req, res) => {
-  const password = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.password).digest(CIPHER_BASE);
-  db.forgotPassword_editPassword(req.body, password, res);
-})
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// API List
-
 router.post('/check-user-registered', (req, res) => {
   db.checkUserRegistered(req.body, res);
-})
-
-router.get('/user/verify/:id', (req, res) => {
-  db.checkVerified(req.params, res);
-})
-
-router.put('/user/verify/:id', jwtMW, (req, res) => {
-  db.verifyUser(req.params, res);
-})
-
-router.post('/user/verify-token', (req, res) => {
-  db.verifyToken(req.body, res);
-})
-
-router.delete('/token/verification/all', (req, res) => {
-  db.deleteVerificationToken(req.params, res);
-})
-
-router.delete('/token/reset-password/all', (req, res) => {
-  db.deleteResetPasswordToken(req.params, res);
-})
-
-router.delete('/token/inactive/all', (req, res) => {
-  db.deleteInactiveToken(req.params, res);
 })
 
 module.exports = router

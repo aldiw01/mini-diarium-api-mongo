@@ -1,9 +1,7 @@
-
 const express = require('express')
 var router = express.Router()
 const multer = require('multer')
-// var db = require('../models/users')
-var db = require('../models/users~')
+var db = require('../models/users')
 const exjwt = require('express-jwt')
 const crypto = require("crypto")
 var path = require('path')
@@ -40,17 +38,13 @@ const HASH_ALGORITHM = process.env.APP_HASH_ALGORITHM
 /////////////////////////////////////////////////////////////////////////////////////////////
 // API Users => /api/users/
 
-router.get('/', /*jwtMW,*/ (req, res) => {
+router.get('/', jwtMW, (req, res) => {
   db.getUserAll(req.body, res)
 })
 
 router.get('/:id', (req, res) => {
   db.getUser(req.params, res)
 })
-
-// router.get('/role/:id', /* jwtMW, */ (req, res) => {
-//   db.getUserRole(req.params, res)
-// })
 
 router.get('/search/:id', (req, res) => {
   db.getUserSearch(req.params, res)
@@ -61,17 +55,17 @@ router.post('/', (req, res) => {
   db.newUser(req.body, password, res)
 })
 
-router.put('/:id', /* jwtMW, */ (req, res) => {
+router.put('/:id', jwtMW, (req, res) => {
   db.updateUser(req, res)
 })
 
-router.put('/password/:id', /* jwtMW, */ (req, res) => {
+router.put('/password/:id', jwtMW, (req, res) => {
   req.body.password = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.new).digest(CIPHER_BASE);
   req.body.password_old = crypto.createHmac(HASH_ALGORITHM, CIPHER_SECRET).update(req.body.old).digest(CIPHER_BASE);
   db.updateUserPassword(req, res)
 })
 
-router.put('/photo/:id', jwtMW, (req, res) => {
+router.put('/photo/:id', jwtMW, (req, res) => {[]
   var upload = multer({
     storage: storageUsers,
     limits: {
@@ -102,16 +96,8 @@ router.put('/photo/:id', jwtMW, (req, res) => {
   })
 })
 
-router.put('/role/:id', jwtMW, (req, res) => {
-  db.updateUserRole(req, res)
-})
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 // EXTREAMLY DANGEROUS, USE THIS WISELY
-
-router.delete('/:id', jwtMW, (req, res) => {
-  db.deactivateUser(req.params, res)
-})
 
 router.delete('/ever/:id', jwtMW, (req, res) => {
   db.deleteUser(req.params, res)
