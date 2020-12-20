@@ -15,16 +15,16 @@ const activitySchema = new Schema({
         required: true
     },
     status: {
-        type: Number,
-        default: 1,
+        type: String,
+        default: "1",
         required: true
     },
     created: {
-        type: Date,
+        type: String,
         required: true
     },
     updated: {
-        type: Date,
+        type: String,
         required: true
     }
 }, {
@@ -41,7 +41,7 @@ module.exports = {
     getActivityAll: function (req, res) {
         Activities.find({}).sort({ created: 'desc' })
             .then((activities) => {
-                if (activities == null) {
+                if (activities.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
@@ -61,7 +61,7 @@ module.exports = {
     getActivity: function (req, res) {
         Activities.find({ id: req.id })
             .then((activity) => {
-                if (activity == null) {
+                if (activity.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
@@ -82,7 +82,7 @@ module.exports = {
     getActivityUser: function (req, res) {
         Activities.find({ user_id: req.id }).sort({ created: 'desc' })
             .then((activities) => {
-                if (activities == null) {
+                if (activities.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
@@ -100,9 +100,11 @@ module.exports = {
     },
 
     getActivityType: function (req, res) {
-        Activities.find({ user_id: req.id, status: req.status }).sort({ created: 'desc' })
+        // console.log("user_id: ", req.id);
+        // console.log("status: ", req.status);
+        Activities.find({ user_id: req.id, status: req.status.toString()}).sort({ created: 'desc' })
             .then((activities) => {
-                if (activities == null) {
+                if (activities.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
@@ -121,9 +123,9 @@ module.exports = {
 
     getActivityTypeExcept: function (req, res) {
 
-        Activities.find({ user_id: req.id, status: { $ne: req.status } }).sort({ created: 'desc' })
+        Activities.find({user_id: req.id, status: {$ne: req.status.toString()} }).sort({ created: 'desc' })
             .then((activities) => {
-                if (activities == null) {
+                if (activities.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.statusCode = 200;
@@ -154,7 +156,6 @@ module.exports = {
         Activities.create(request)
             .then(() => {
                 res.json({
-                    // affectedRows: rows.info.affectedRows,
                     err: null,
                     message: "Activity has been registered successfully.",
                     success: true
@@ -183,7 +184,6 @@ module.exports = {
         Activities.updateOne({ id: req.params.id }, request)
             .then(() => {
                 res.json({
-                    // affectedRows: rows.info.affectedRows,
                     err: null,
                     message: "Activity has been updated successfully.",
                     success: true
@@ -204,11 +204,10 @@ module.exports = {
         }
         Activities.deleteOne({ id: req.id })
             .then((activity) => {
-                if (activity == null) {
+                if (activity.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.json({
-                        // affectedRows: rows.info.affectedRows,
                         err: null,
                         message: "Activity has been deleted successfully.",
                         success: true
@@ -226,11 +225,10 @@ module.exports = {
     deleteActivityAll: function (req, res) {
         Activities.deleteMany({})
             .then(() => {
-                if (activity == null) {
+                if (activity.length === 0) {
                     res.status(404).send({ message: 'Data not found.' });
                 } else {
                     res.json({
-                        //affectedRows: rows.info.affectedRows,
                         message: "All Activity has been deleted successfully.",
                         success: true
                     });

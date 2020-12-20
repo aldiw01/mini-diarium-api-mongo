@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const escapeStringRegexp = require('escape-string-regexp');
 
 const presenceSchema = new Schema({
   id: {
@@ -12,12 +13,12 @@ const presenceSchema = new Schema({
     required: true
   },
   status: {
-    type: Number,
+    type: String,
     default: 2,
     required: true
   },
   created: {
-    type: Date,
+    type: String,
     required: true
   }
 }, {
@@ -34,7 +35,7 @@ module.exports = {
   getPresenceAll: function (req, res) {
     Presences.find({})
       .then((presences) => {
-        if (presences == null) {
+        if (presences.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
           // var data = [];
@@ -63,7 +64,7 @@ module.exports = {
   getPresence: function (req, res) {
     Presences.find({ id: req.id })
       .then((presences) => {
-        if (presences == null) {
+        if (presences.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
           // var data = [];
@@ -100,7 +101,7 @@ module.exports = {
 
     Presences.find(request).sort({ created: 'desc' })
       .then((presences) => {
-        if (presences == null) {
+        if (presences.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
           // var data = [];
@@ -140,7 +141,6 @@ module.exports = {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({
-          // affectedRows: rows.info.affectedRows,
           err: null,
           message: "Presence has been registered successfully.",
           success: true
@@ -166,7 +166,6 @@ module.exports = {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({
-          affectedRows: rows.info.affectedRows,
           err: null,
           message: "Presence has been updated successfully",
           success: true
@@ -189,13 +188,12 @@ module.exports = {
 
     Presences.deleteOne({ id: req.id })
       .then((presence) => {
-        if (presence == null) {
+        if (presence.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
           res.json({
-            // affectedRows: rows.info.affectedRows,
             err: null,
             message: "Presence has been deleted successfully",
             success: true
@@ -214,13 +212,12 @@ module.exports = {
   deletePresenceAll: function (req, res) {
     Presences.deleteMany({})
       .then((presences) => {
-        if (presences == null) {
+        if (presences.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
           res.json({
-            // affectedRows: rows.info.affectedRows,
             err: null,
             message: "All Presence has been deleted successfully",
             success: true
