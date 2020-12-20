@@ -100,8 +100,6 @@ module.exports = {
     },
 
     getActivityType: function (req, res) {
-        // console.log("user_id: ", req.id);
-        // console.log("status: ", req.status);
         Activities.find({ user_id: req.id, status: req.status.toString()}).sort({ created: 'desc' })
             .then((activities) => {
                 if (activities.length === 0) {

@@ -23,7 +23,6 @@ module.exports = {
     checkUserRegistered: function (req, res) {
         Users.find({ id: req.id })
             .then((user) => {
-                // console.log(user);
                 if (user.length === 1) {
                     res.json({
                         success: true,

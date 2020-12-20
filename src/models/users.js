@@ -189,8 +189,6 @@ module.exports = {
       return
     }
 
-    console.log(req.params.id, '\n', req.body.password_old , '\n', req.body.password);
-
     const request1 = {
       id: req.params.id,
       password: req.body.password_old

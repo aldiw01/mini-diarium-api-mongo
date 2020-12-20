@@ -1,0 +1,6 @@
+"id","name","password","email","photo","registered","updated"
+"010101","guest","Qg0hNbPN7NLGKTKHLEpGCv424Iyz+61YEf2Eavg+LQ8=","test@mail.com",NULL,"2020-05-10T12:01:39.524Z","2020-05-10T12:01:39.524Z"
+"121212","Test","7VcoapVGWAXXcRJETh4YZCF/dU8qrz5k5h/6zQWpgzg=","test@test.com",,"2020-12-14T17:14:58.280Z","2020-12-14T17:26:32.174Z"
+"123456","Test User","mPdsf6fDWqRMU4hQIKewxgJMvO+1tqGavhzREcDOiM8=","123456@telkom.co.id","profile_photo_123456.png","2020-05-10T12:01:39.524Z","2020-12-19T15:35:34.198Z"
+"970037","Aldi Wiranata","OgbSS2F9R43wwZBoQsIpxIl+0GvimhMMarH0/f3NapY=","aldiw01@gmail.com",,"2020-05-07T04:51:54.211Z","2020-06-05T09:19:39.053Z"
+"990001","John Doe","xxzZ9y4NdyZ7uIoHhDW9Pr4UqRphUmZNtgKFhO1toJw=","john@telkom.co.id",,"2020-12-20T11:43:39.514Z","2020-12-20T11:43:39.514Z"

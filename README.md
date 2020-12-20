@@ -61,3 +61,6 @@ or
 ``` bash
 $ yarn start
 ```
+
+## Database
+There are 3 collections: users, activites, presences in MongoDB (CSV), just import it to MongoDB
