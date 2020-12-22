@@ -6,7 +6,7 @@ const routes = require('./src/routes')
 
 //Connect MongoDB
 const mongoose = require('mongoose');
-const url = process.env.APP_DATABASE_HOST_MONGO;
+const url = 'mongodb://' + process.env.APP_DATABASE_HOST_MONGO + '/' + process.env.APP_DATABASE_DB;
 const connect = mongoose.connect(url, {
 	useNewUrlParser: true, 
 	useUnifiedTopology: true, 
