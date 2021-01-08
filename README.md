@@ -47,6 +47,12 @@ APP_URL_LOGIN
 APP_URL_RESET_PASSWORD
 ```
 
+#### Production
+```
+APP_DATABASE_PASSWORD
+APP_DATABASE_USERNAME
+```
+
 ## Deploy API
 ``` bash
 $ node index.js
