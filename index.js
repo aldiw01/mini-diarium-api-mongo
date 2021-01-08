@@ -6,16 +6,16 @@ const routes = require('./src/routes')
 
 //Connect MongoDB
 const mongoose = require('mongoose');
-const url = 'mongodb://' + process.env.APP_DATABASE_HOST_MONGO + '/' + process.env.APP_DATABASE_DB;
+const url = 'mongodb://' + process.env.APP_DATABASE_HOST + '/' + process.env.APP_DATABASE_DB;
 const connect = mongoose.connect(url, {
-	useNewUrlParser: true, 
-	useUnifiedTopology: true, 
-	useCreateIndex: true, 
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true,
 	useFindAndModify: false
 });
 
-connect.then( (db) => {
-  console.log("Connected correctly to server")
+connect.then((db) => {
+	console.log("Connected correctly to server")
 }, (err) => { console.log(err); });
 
 

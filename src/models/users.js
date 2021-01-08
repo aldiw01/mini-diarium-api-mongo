@@ -20,6 +20,10 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  directorate: {
+    type: String,
+    required: true
+  },
   photo: {
     type: String
   },
@@ -98,6 +102,7 @@ module.exports = {
               id: user.id,
               name: user.name,
               email: user.email,
+              directorate: user.directorate,
               photo: user.photo,
               registered: user.registered,
               updated: user.updated
@@ -124,6 +129,7 @@ module.exports = {
       name: req.name,
       password: password,
       email: req.email,
+      directorate: req.directorate,
       photo: '',
       registered: waktu,
       updated: waktu
@@ -149,17 +155,19 @@ module.exports = {
   },
 
   updateUser: function (req, res) {
-    if (req.body.name == undefined || req.body.name == "" || req.body.email == undefined || req.body.email == "") {
-      res.send({ message: 'Bad Request: Parameters cannot empty.' });
-      return
-    }
-
     const waktu = new Date().toISOString();
     const request = {
       name: req.body.name,
       email: req.body.email,
+      directorate: req.body.directorate,
       updated: waktu
     };
+
+    if (Object.values(request).includes(undefined) || Object.values(request).includes("")) {
+      res.send({ message: 'Bad Request: Parameters cannot empty.' });
+      return
+    }
+
     Users.findOneAndUpdate({ id: req.params.id }, request/* , {new: true} */)
       .then((user) => {
         if (user.length === 0) {
@@ -214,7 +222,7 @@ module.exports = {
             success: true
           });
         }
-      },(err) => {
+      }, (err) => {
         res.send({ message: err.message });
         console.log(err);
       })
@@ -223,7 +231,7 @@ module.exports = {
         console.log(err);
       });
   },
-  
+
   updateUserPhoto: function (req, res) {
     if (req.body.photo == undefined || req.body.photo == "" || req.params.id == undefined || req.params.id == "") {
       res.send({ message: 'Bad Request: Parameters cannot empty.' });
@@ -258,7 +266,7 @@ module.exports = {
         console.log(err);
       });
   },
-  
+
   deleteUser: function (req, res) {
     if (req.id == undefined || req.id == "") {
       res.send({ message: 'Bad Request: Parameters cannot empty.' });

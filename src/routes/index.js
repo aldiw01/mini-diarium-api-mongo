@@ -9,6 +9,7 @@ const jwtMW = exjwt({
 
 const accounts = require('./accounts')
 const activity = require('./activity')
+const posts = require('./posts')
 const presence = require('./presence')
 const uploads = require('./uploads')
 const users = require('./users')
@@ -18,6 +19,7 @@ const users = require('./users')
 
 router.use('/accounts', accounts)
 router.use('/activity', activity)
+router.use('/posts', posts)
 router.use('/presence', presence)
 router.use('/uploads', uploads)
 router.use('/users', users)
