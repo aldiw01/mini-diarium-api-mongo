@@ -23,6 +23,10 @@ router.post('/', jwtMW, (req, res) => {
   db.newPost(req.body, res)
 })
 
+router.get('/comments/', jwtMW, (req, res) => {
+  db.getPostComment(req, res)
+})
+
 router.post('/comments/', jwtMW, (req, res) => {
   db.newPostComment(req.body, res)
 })

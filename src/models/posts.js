@@ -107,6 +107,24 @@ module.exports = {
       });
   },
 
+  getPostComment: function (req, res) {
+    Posts.find({ header: req.header })
+      .then((data) => {
+        if (data.length === 0) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.json(data);
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
   newPostComment: function (req, res) {
     const waktu = new Date().toISOString();
     var request = {
