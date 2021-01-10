@@ -6,16 +6,23 @@ const routes = require('./src/routes')
 
 //Connect MongoDB
 const mongoose = require('mongoose');
-const url = 'mongodb://' + process.env.APP_DATABASE_HOST + '/' + process.env.APP_DATABASE_DB;
+
+var url = '';
+if (process.env.NODE_ENV === "production") {
+	url = `mongodb+srv://${process.env.APP_DATABASE_USERNAME}:${process.env.APP_DATABASE_PASSWORD}@${process.env.APP_DATABASE_HOST}/${process.env.APP_DATABASE_DB}?retryWrites=true&w=majority`;
+} else {
+	url = 'mongodb://' + process.env.APP_DATABASE_HOST + '/' + process.env.APP_DATABASE_DB;
+}
+
 const connect = mongoose.connect(url, {
-	useNewUrlParser: true, 
-	useUnifiedTopology: true, 
-	useCreateIndex: true, 
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true,
 	useFindAndModify: false
 });
 
-connect.then( (db) => {
-  console.log("Connected correctly to server")
+connect.then((db) => {
+	console.log("Connected correctly to server")
 }, (err) => { console.log(err); });
 
 
@@ -49,7 +56,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.get('/', (req, res) => {
-	res.redirect('http://localhost:3000');
+	res.redirect('https://minidiarium-netbeans.netlify.app');
 });
 
 app.get('*', function (req, res) {

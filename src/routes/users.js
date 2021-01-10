@@ -65,7 +65,8 @@ router.put('/password/:id', jwtMW, (req, res) => {
   db.updateUserPassword(req, res)
 })
 
-router.put('/photo/:id', jwtMW, (req, res) => {[]
+router.put('/photo/:id', jwtMW, (req, res) => {
+  []
   var upload = multer({
     storage: storageUsers,
     limits: {

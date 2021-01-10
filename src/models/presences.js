@@ -161,7 +161,7 @@ module.exports = {
       return
     }
 
-    Presences.findOneAndUpdate({ id: req.params.id }, {status: req.body.status} )
+    Presences.findOneAndUpdate({ id: req.params.id }, { status: req.body.status })
       .then((presence) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
