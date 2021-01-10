@@ -78,6 +78,44 @@ module.exports = {
       });
   },
 
+  getDirectoratePost: function (req, res) {
+    Posts.find({ directorate: req.directorate })
+      .then((data) => {
+        if (data.length === 0) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.json(data);
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
+  getOrderedPost: function (req, res) {
+    Posts.find({}).sort({ timestamps: 'desc' })
+      .then((data) => {
+        if (data.length === 0) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json(data);
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
   newPost: function (req, res) {
     const waktu = new Date().toISOString();
     var request = {
