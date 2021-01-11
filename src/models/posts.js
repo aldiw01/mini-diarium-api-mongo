@@ -163,6 +163,7 @@ module.exports = {
           Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
             .then((comments) => {
               headlines.top = { post, comments }
+              post = []
             }, (err) => {
               res.send({ message: err.message });
               console.log(err);
@@ -182,6 +183,7 @@ module.exports = {
               Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
                 .then((comments) => {
                   headlines.directorate = { post, comments }
+                  post = []
                 }, (err) => {
                   res.send({ message: err.message });
                   console.log(err);
@@ -201,6 +203,7 @@ module.exports = {
                   Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
                     .then((comments) => {
                       headlines.latest = { post, comments }
+                      post = []
                       res.json(headlines)
                     }, (err) => {
                       res.send({ message: err.message });
