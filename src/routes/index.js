@@ -13,6 +13,7 @@ const posts = require('./posts')
 const presence = require('./presence')
 const uploads = require('./uploads')
 const users = require('./users')
+const votes = require('./votes')
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // API Routes
@@ -23,6 +24,7 @@ router.use('/posts', posts)
 router.use('/presence', presence)
 router.use('/uploads', uploads)
 router.use('/users', users)
+router.use('/votes', votes)
 
 router.get('/', jwtMW /* Using the express jwt MW here */, (req, res) => {
   res.send({ message: 'You are authenticated' }); //Sending some response when authenticated
