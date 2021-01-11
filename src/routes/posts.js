@@ -27,12 +27,16 @@ router.get('/ordered', (req, res) => {
   db.getOrderedPost(req.body, res)
 })
 
-router.post('/', jwtMW, (req, res) => {
-  db.newPost(req.body, res)
+router.get('/comments/:id', jwtMW, (req, res) => {
+  db.getPostComment(req.params, res)
 })
 
-router.get('/comments/', jwtMW, (req, res) => {
-  db.getPostComment(req, res)
+router.get('/headlines/:directorate', jwtMW, (req, res) => {
+  db.getPostHeadline(req.params, res)
+})
+
+router.post('/', jwtMW, (req, res) => {
+  db.newPost(req.body, res)
 })
 
 router.post('/comments/', jwtMW, (req, res) => {

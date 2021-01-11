@@ -11,6 +11,10 @@ const postSchema = new Schema({
     type: String,
     required: true
   },
+  photo: {
+    type: String,
+    default: "test.jpg"
+  },
   name: {
     type: String,
     required: true
@@ -116,6 +120,128 @@ module.exports = {
       });
   },
 
+  getPostComment: function (req, res) {
+    Posts.find({ header: req.id })
+      .then((data) => {
+        if (data.length === 0) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          res.json(data);
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
+  getPostHeadline: function (req, res) {
+    const request = {
+      directorate: req.directorate
+    };
+
+    if (Object.values(request).includes(undefined) || Object.values(request).includes("")) {
+      res.send({ message: 'Bad Request: Parameters cannot empty.' });
+      return
+    }
+
+    var headlines = {
+      top: [],
+      directorate: [],
+      latest: []
+    }
+    var post = []
+    Posts.find({ header: "1" }).sort({ reactions: -1 }).limit(1)
+      .then((data) => {
+        if (data.length === 0) {
+          headlines.top = ""
+        } else {
+          headlines.top = post = data
+          Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+            .then((comments) => {
+              headlines.top = { post, comments }
+              post = []
+            }, (err) => {
+              res.send({ message: err.message });
+              console.log(err);
+            })
+            .catch((err) => {
+              res.send({ message: err.message });
+              console.log(err);
+            });
+        }
+
+        Posts.find({ header: "1", directorate: req.directorate }).sort({ reactions: -1 }).limit(1)
+          .then((data) => {
+            if (data.length === 0) {
+              headlines.directorate = ""
+            } else {
+              headlines.directorate = post = data
+              Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+                .then((comments) => {
+                  headlines.directorate = { post, comments }
+                  post = []
+                }, (err) => {
+                  res.send({ message: err.message });
+                  console.log(err);
+                })
+                .catch((err) => {
+                  res.send({ message: err.message });
+                  console.log(err);
+                });
+            }
+
+            Posts.find({ header: "1" }).sort({ createdAt: -1 }).limit(1)
+              .then((data) => {
+                if (data.length === 0) {
+                  headlines.latest = ""
+                } else {
+                  headlines.latest = post = data
+                  Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+                    .then((comments) => {
+                      headlines.latest = { post, comments }
+                      post = []
+                      res.json(headlines)
+                    }, (err) => {
+                      res.send({ message: err.message });
+                      console.log(err);
+                    })
+                    .catch((err) => {
+                      res.send({ message: err.message });
+                      console.log(err);
+                    });
+                }
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+
+          }, (err) => {
+            res.send({ message: err.message });
+            console.log(err);
+          })
+          .catch((err) => {
+            res.send({ message: err.message });
+            console.log(err);
+          });
+
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
   newPost: function (req, res) {
     const waktu = new Date().toISOString();
     var request = {
@@ -135,24 +261,6 @@ module.exports = {
           message: "Post has been registered successfully.",
           success: true
         });
-      }, (err) => {
-        res.send({ message: err.message });
-        console.log(err);
-      })
-      .catch((err) => {
-        res.send({ message: err.message });
-        console.log(err);
-      });
-  },
-
-  getPostComment: function (req, res) {
-    Posts.find({ header: req.header })
-      .then((data) => {
-        if (data.length === 0) {
-          res.status(404).send({ message: 'Data not found.' });
-        } else {
-          res.json(data);
-        }
       }, (err) => {
         res.send({ message: err.message });
         console.log(err);
