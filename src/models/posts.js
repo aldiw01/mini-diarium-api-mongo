@@ -185,6 +185,9 @@ module.exports = {
                     if (a.post.reactions > b.post.reactions)
                       return -1;
                     else if (a.post.reactions < b.post.reactions) return 1;
+                    if (a.post.createdAt > b.post.createdAt)
+                      return -1;
+                    else if (a.post.createdAt < b.post.createdAt) return 1;
                     return 0;
                   })
                   res.json(all)
@@ -243,25 +246,31 @@ module.exports = {
       latest: []
     }
     var post = []
-    Posts.find({ header: "1" }).sort({ reactions: -1 }).limit(1)
+    // Find Top Trending Post
+    Posts.find({ header: "1" }).sort({ reactions: -1, createdAt: -1 }).limit(1)
       .then((data) => {
         headlines.top = post = data
+        // Find Comments From Top Trending Post
         Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
           .then((comments) => {
             headlines.top = { post, comments }
             post = []
 
-            Posts.find({ header: "1", directorate: req.directorate }).sort({ reactions: -1 }).limit(1)
+            // Find Post From My Directorate
+            Posts.find({ header: "1", directorate: req.directorate }).sort({ reactions: -1, createdAt: -1 }).limit(1)
               .then((data) => {
                 headlines.directorate = post = data
+                // Find Comments From My Directorate Post
                 Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
                   .then((comments) => {
                     headlines.directorate = { post, comments }
                     post = []
 
+                    // Find Latest Post
                     Posts.find({ header: "1" }).sort({ createdAt: -1 }).limit(1)
                       .then((data) => {
                         headlines.latest = post = data
+                        // Find Comments From Latest Post
                         Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
                           .then((comments) => {
                             headlines.latest = { post, comments }
