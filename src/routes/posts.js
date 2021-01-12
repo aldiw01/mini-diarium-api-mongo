@@ -19,12 +19,16 @@ router.get('/:id', (req, res) => {
   db.getPost(req.params, res)
 })
 
-router.get('/:directorate', (req, res) => {
-  db.getDirectoratePost(req.params, res)
+router.get('/directorate/:id', (req, res) => {
+  db.getPostDirectorate(req.params, res)
 })
 
-router.get('/ordered', (req, res) => {
-  db.getOrderedPost(req.body, res)
+router.get('/latest/all', (req, res) => {
+  db.getPostOrdered(req.body, res)
+})
+
+router.get('/top/all', (req, res) => {
+  db.getPostTop(req.body, res)
 })
 
 router.get('/comments/:id', jwtMW, (req, res) => {

@@ -82,13 +82,30 @@ module.exports = {
       });
   },
 
-  getDirectoratePost: function (req, res) {
-    Posts.find({ directorate: req.directorate })
+  getPostDirectorate: function (req, res) {
+    Posts.find({ header: "1", directorate: req.id }).sort({ createdAt: -1 })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
-          res.json(data);
+          var all = [];
+          data.forEach(function (post) {
+            Posts.find({ header: post.id }).sort({ reactions: -1, createdAt: -1 })
+              .then((comments) => {
+                var bundle = { post, comments }
+                all.push(bundle)
+
+                if (all.length === data.length)
+                  res.json(all)
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+          });
         }
       }, (err) => {
         res.send({ message: err.message });
@@ -100,15 +117,65 @@ module.exports = {
       });
   },
 
-  getOrderedPost: function (req, res) {
-    Posts.find({}).sort({ timestamps: 'desc' })
+  getPostOrdered: function (req, res) {
+    Posts.find({ header: "1" }).sort({ createdAt: -1 })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
         } else {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json(data);
+          var all = [];
+          data.forEach(function (post) {
+            Posts.find({ header: post.id }).sort({ reactions: -1, createdAt: -1 })
+              .then((comments) => {
+                var bundle = { post, comments }
+                all.push(bundle)
+
+                if (all.length === data.length)
+                  res.json(all)
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+          });
+        }
+      }, (err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      })
+      .catch((err) => {
+        res.send({ message: err.message });
+        console.log(err);
+      });
+  },
+
+  getPostTop: function (req, res) {
+    Posts.find({ header: "1" }).sort({ "reactions": -1 })
+      .then((data) => {
+        if (data.length === 0) {
+          res.status(404).send({ message: 'Data not found.' });
+        } else {
+          var all = [];
+          data.forEach(function (post) {
+            Posts.find({ header: post.id }).sort({ reactions: -1, createdAt: -1 })
+              .then((comments) => {
+                var bundle = { post, comments }
+                all.push(bundle)
+
+                if (all.length === data.length)
+                  res.json(all)
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+          });
         }
       }, (err) => {
         res.send({ message: err.message });
@@ -121,7 +188,7 @@ module.exports = {
   },
 
   getPostComment: function (req, res) {
-    Posts.find({ header: req.id })
+    Posts.find({ header: req.id }).sort({ reactions: -1, createdAt: -1 })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
@@ -247,6 +314,7 @@ module.exports = {
     var request = {
       id: 'C' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
+      photo: req.photo === "" || req.photo === undefined ? "test.jpg" : req.photo,
       name: req.name,
       directorate: req.directorate,
       message: req.message,
@@ -276,6 +344,7 @@ module.exports = {
     var request = {
       id: 'R' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
+      photo: req.photo,
       name: req.name,
       directorate: req.directorate,
       message: req.message,
