@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const db = require('./posts');
+const Posts = db.PostsMod;
 
 const voteSchema = new Schema({
   user_id: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   post_id: {
     type: String,
@@ -44,8 +45,8 @@ module.exports = {
       });
   },
 
-  getVote: function (req, res) {
-    Votes.find({ user_id: req.userid, post_id: req.postid })
+  getVoteUser: function (req, res) {
+    Votes.find({ user_id: req.id })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
@@ -62,40 +63,35 @@ module.exports = {
       });
   },
 
-  newVote: function (req, res) {
+  updateVoteAdd: function (req, res) {
     var request = {
-      user_id: req.user_id,
-      post_id: req.post_id,
-      reactions: "0",
+      user_id: req.params.user_id,
+      post_id: req.params.post_id,
+      reactions: 1,
     };
 
     Votes.create(request)
       .then(() => {
-        res.json({
-          err: null,
-          message: "Vote has been registered successfully.",
-          success: true
-        });
-      }, (err) => {
-        res.send({ message: err.message });
-        console.log(err);
-      })
-      .catch((err) => {
-        res.send({ message: err.message });
-        console.log(err);
-      });
-  },
 
-  updateVoteReactionAdd: function (req, res) {
-    Votes.find({ user_id: req.params.userid, post_id: req.params.postid })
-      .then((data) => {
-        Votes.findOneAndUpdate({ user_id: req.params.userid, post_id: req.params.postid }, { reactions: data[0].reactions + 1 })
-          .then(() => {
-            res.json({
-              err: null,
-              message: "Vote has been updated successfully",
-              success: true
-            });
+        Posts.find({ id: req.params.post_id })
+          .then((data) => {
+
+            Posts.findOneAndUpdate({ id: req.params.post_id }, { reactions: data[0].reactions + 1 })
+              .then(() => {
+                res.json({
+                  err: null,
+                  message: "Post has been updated successfully",
+                  success: true
+                });
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+
           }, (err) => {
             res.send({ message: err.message });
             console.log(err);
@@ -115,16 +111,35 @@ module.exports = {
       });
   },
 
-  updateVoteReactionRemove: function (req, res) {
-    Votes.find({ user_id: req.params.userid, post_id: req.params.postid })
-      .then((data) => {
-        Votes.findOneAndUpdate({ user_id: req.params.userid, post_id: req.params.postid }, { reactions: data[0].reactions - 1 })
-          .then(() => {
-            res.json({
-              err: null,
-              message: "Vote has been updated successfully",
-              success: true
-            });
+  updateVoteRemove: function (req, res) {
+    var request = {
+      user_id: req.params.user_id,
+      post_id: req.params.post_id,
+      reactions: -1,
+    };
+
+    Votes.create(request)
+      .then(() => {
+
+        Posts.find({ id: req.params.post_id })
+          .then((data) => {
+
+            Posts.findOneAndUpdate({ id: req.params.post_id }, { reactions: data[0].reactions - 1 })
+              .then(() => {
+                res.json({
+                  err: null,
+                  message: "Post has been updated successfully",
+                  success: true
+                });
+              }, (err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              })
+              .catch((err) => {
+                res.send({ message: err.message });
+                console.log(err);
+              });
+
           }, (err) => {
             res.send({ message: err.message });
             console.log(err);

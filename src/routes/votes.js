@@ -9,26 +9,22 @@ const jwtMW = exjwt({
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// API Posts => /api/votes/
+// API Votes => /api/votes/
 
 router.get('/', jwtMW, (req, res) => {
   db.getVoteAll(req.body, res)
 })
 
-router.get('/:userid/:postid', (req, res) => {
-  db.getVote(req.params, res)
+router.get('/user/:id', (req, res) => {
+  db.getVoteUser(req.params, res)
 })
 
-router.post('/', jwtMW, (req, res) => {
-  db.newVote(req.body, res)
+router.post('/add/:user_id/:post_id', jwtMW, (req, res) => {
+  db.updateVoteAdd(req, res)
 })
 
-router.put('/reactions/add/:userid/:postid', jwtMW, (req, res) => {
-  db.updateVoteReactionAdd(req, res)
-})
-
-router.put('/reactions/remove/:userid/:postid', jwtMW, (req, res) => {
-  db.updateVoteReactionRemove(req, res)
+router.post('/remove/:user_id/:post_id', jwtMW, (req, res) => {
+  db.updateVoteRemove(req, res)
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////////

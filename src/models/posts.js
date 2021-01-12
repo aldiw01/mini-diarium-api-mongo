@@ -42,6 +42,7 @@ const postSchema = new Schema({
 const Posts = mongoose.model('Post', postSchema);
 
 module.exports = {
+  PostsMod: Posts,
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   // INFO PRESENCES
@@ -95,8 +96,15 @@ module.exports = {
                 var bundle = { post, comments }
                 all.push(bundle)
 
-                if (all.length === data.length)
+                if (all.length === data.length) {
+                  all.sort((a, b) => {
+                    if (a.post.createdAt > b.post.createdAt)
+                      return -1;
+                    else if (a.post.createdAt < b.post.createdAt) return 1;
+                    return 0;
+                  })
                   res.json(all)
+                }
               }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);
@@ -130,8 +138,15 @@ module.exports = {
                 var bundle = { post, comments }
                 all.push(bundle)
 
-                if (all.length === data.length)
+                if (all.length === data.length) {
+                  all.sort((a, b) => {
+                    if (a.post.createdAt > b.post.createdAt)
+                      return -1;
+                    else if (a.post.createdAt < b.post.createdAt) return 1;
+                    return 0;
+                  })
                   res.json(all)
+                }
               }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);
@@ -165,8 +180,15 @@ module.exports = {
                 var bundle = { post, comments }
                 all.push(bundle)
 
-                if (all.length === data.length)
+                if (all.length === data.length) {
+                  all.sort((a, b) => {
+                    if (a.post.reactions > b.post.reactions)
+                      return -1;
+                    else if (a.post.reactions < b.post.reactions) return 1;
+                    return 0;
+                  })
                   res.json(all)
+                }
               }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);
@@ -188,7 +210,7 @@ module.exports = {
   },
 
   getPostComment: function (req, res) {
-    Posts.find({ header: req.id }).sort({ reactions: -1, createdAt: -1 })
+    Posts.find({ header: req.id }).sort({ reactions: -1, createdAt: 1 })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
@@ -223,64 +245,54 @@ module.exports = {
     var post = []
     Posts.find({ header: "1" }).sort({ reactions: -1 }).limit(1)
       .then((data) => {
-        if (data.length === 0) {
-          headlines.top = ""
-        } else {
-          headlines.top = post = data
-          Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
-            .then((comments) => {
-              headlines.top = { post, comments }
-              post = []
-            }, (err) => {
-              res.send({ message: err.message });
-              console.log(err);
-            })
-            .catch((err) => {
-              res.send({ message: err.message });
-              console.log(err);
-            });
-        }
+        headlines.top = post = data
+        Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+          .then((comments) => {
+            headlines.top = { post, comments }
+            post = []
 
-        Posts.find({ header: "1", directorate: req.directorate }).sort({ reactions: -1 }).limit(1)
-          .then((data) => {
-            if (data.length === 0) {
-              headlines.directorate = ""
-            } else {
-              headlines.directorate = post = data
-              Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
-                .then((comments) => {
-                  headlines.directorate = { post, comments }
-                  post = []
-                }, (err) => {
-                  res.send({ message: err.message });
-                  console.log(err);
-                })
-                .catch((err) => {
-                  res.send({ message: err.message });
-                  console.log(err);
-                });
-            }
-
-            Posts.find({ header: "1" }).sort({ createdAt: -1 }).limit(1)
+            Posts.find({ header: "1", directorate: req.directorate }).sort({ reactions: -1 }).limit(1)
               .then((data) => {
-                if (data.length === 0) {
-                  headlines.latest = ""
-                } else {
-                  headlines.latest = post = data
-                  Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
-                    .then((comments) => {
-                      headlines.latest = { post, comments }
-                      post = []
-                      res.json(headlines)
-                    }, (err) => {
-                      res.send({ message: err.message });
-                      console.log(err);
-                    })
-                    .catch((err) => {
-                      res.send({ message: err.message });
-                      console.log(err);
-                    });
-                }
+                headlines.directorate = post = data
+                Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+                  .then((comments) => {
+                    headlines.directorate = { post, comments }
+                    post = []
+
+                    Posts.find({ header: "1" }).sort({ createdAt: -1 }).limit(1)
+                      .then((data) => {
+                        headlines.latest = post = data
+                        Posts.find({ header: data[0].id }).sort({ reactions: -1, createdAt: -1 })
+                          .then((comments) => {
+                            headlines.latest = { post, comments }
+                            post = []
+                            res.json(headlines)
+                          }, (err) => {
+                            res.send({ message: err.message });
+                            console.log(err);
+                          })
+                          .catch((err) => {
+                            res.send({ message: err.message });
+                            console.log(err);
+                          });
+                      }, (err) => {
+                        res.send({ message: err.message });
+                        console.log(err);
+                      })
+                      .catch((err) => {
+                        res.send({ message: err.message });
+                        console.log(err);
+                      });
+
+                  }, (err) => {
+                    res.send({ message: err.message });
+                    console.log(err);
+                  })
+                  .catch((err) => {
+                    res.send({ message: err.message });
+                    console.log(err);
+                  });
+
               }, (err) => {
                 res.send({ message: err.message });
                 console.log(err);
