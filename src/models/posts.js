@@ -314,8 +314,8 @@ module.exports = {
     var request = {
       id: 'C' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
-      photo: req.photo === "" || req.photo === undefined ? "test.jpg" : req.photo,
-      name: req.name === "" || req.name === undefined ? "Anon" : req.name,
+      photo: req.photo,
+      name: req.name,
       directorate: req.directorate,
       message: req.message,
       reactions: "0",
@@ -344,8 +344,8 @@ module.exports = {
     var request = {
       id: 'R' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
-      photo: req.photo === "" || req.photo === undefined ? "test.jpg" : req.photo,
-      name: req.name === "" || req.name === undefined ? "Anon" : req.name,
+      photo: req.photo,
+      name: req.name,
       directorate: req.directorate,
       message: req.message,
       reactions: "0",
