@@ -153,7 +153,7 @@ module.exports = {
   },
 
   getPostTop: function (req, res) {
-    Posts.find({ header: "1" }).sort({ "reactions": -1 })
+    Posts.find({ header: "1" }).sort({ reactions: -1, createdAt: -1 })
       .then((data) => {
         if (data.length === 0) {
           res.status(404).send({ message: 'Data not found.' });
@@ -315,7 +315,7 @@ module.exports = {
       id: 'C' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
       photo: req.photo === "" || req.photo === undefined ? "test.jpg" : req.photo,
-      name: req.name,
+      name: req.name === "" || req.name === undefined ? "Anon" : req.name,
       directorate: req.directorate,
       message: req.message,
       reactions: "0",
@@ -344,8 +344,8 @@ module.exports = {
     var request = {
       id: 'R' + new Date(waktu).valueOf().toString(32).toUpperCase(),
       user_id: req.user_id,
-      photo: req.photo,
-      name: req.name,
+      photo: req.photo === "" || req.photo === undefined ? "test.jpg" : req.photo,
+      name: req.name === "" || req.name === undefined ? "Anon" : req.name,
       directorate: req.directorate,
       message: req.message,
       reactions: "0",
